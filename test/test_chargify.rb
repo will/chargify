@@ -31,9 +31,23 @@ class TestChargify < Test::Unit::TestCase
     end
     
     
-    should "return info for a customer" do
-      stub_get "https://OU812:x@pengwynn.chargify.com/customers/lookup.json?reference=16", "customer.json"
+    should "return info for a customer by chargify id by default" do
+      stub_get "https://OU812:x@pengwynn.chargify.com/customers/16.json", "customer.json"
       customer = @client.customer(16)
+      customer.reference.should == 'bradleyjoyce'
+      customer.organization.should == 'Squeejee'
+    end
+
+    should "return info for a customer by chargify id" do
+      stub_get "https://OU812:x@pengwynn.chargify.com/customers/16.json", "customer.json"
+      customer = @client.customer_by_chargify_id(16)
+      customer.reference.should == 'bradleyjoyce'
+      customer.organization.should == 'Squeejee'
+    end
+
+    should "return info for a customer by reference" do
+      stub_get "https://OU812:x@pengwynn.chargify.com/customers/lookup.json?reference=bradleyjoyce", "customer.json"
+      customer = @client.customer_by_reference('bradleyjoyce')
       customer.reference.should == 'bradleyjoyce'
       customer.organization.should == 'Squeejee'
     end

@@ -35,9 +35,14 @@ module Chargify
       customers = self.class.get("/customers.json", :query => options)
       customers.map{|c| Hashie::Mash.new c['customer']}
     end
-    
-    def customer(chargify_id)
-      Hashie::Mash.new(self.class.get("/customers/lookup.json?reference=#{chargify_id}")).customer
+
+    def customer_by_chargify_id(chargify_id)
+      Hashie::Mash.new(self.class.get("/customers/#{chargify_id}.json")).customer
+    end
+    alias :customer :customer_by_chargify_id
+
+    def customer_by_reference(reference)
+      Hashie::Mash.new(self.class.get("/customers/lookup.json?reference=#{reference}")).customer
     end
     
     #
